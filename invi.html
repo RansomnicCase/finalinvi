@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arcade Adventure & Memory Lane</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: #F8F0FC;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0px;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #6C4DAB 0%, #9D71E8 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%);
+            padding: 40px 20px;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 4rem;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #FFD700, #FFFFFF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .invitation-box {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            max-width: 600px;
+            margin: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(var(--rotation, 360deg)); }
+        }
+
+        .pixel-heart {
+            font-size: 3rem;
+            color: #9D71E8;
+            margin: 20px 0;
+            animation: pulse 2s infinite;
+        }
+
+        .details {
+            background: white;
+            padding: 50px 20px;
+        }
+
+        .arcade-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .arcade-card {
+            background: #F8F0FC;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            transition: transform 0.3s ease;
+            box-shadow: 0 5px 15px rgba(108,77,171,0.1);
+        }
+
+        .arcade-card:hover {
+            transform: translateY(-10px);
+        }
+
+        button {
+            background: linear-gradient(45deg, #6C4DAB, #9D71E8);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(108,77,171,0.3);
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(108,77,171,0.4);
+        }
+
+        #countdown {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 50px 0;
+        }
+
+        .countdown-item {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            min-width: 150px;
+            box-shadow: 0 5px 15px rgba(108,77,171,0.1);
+        }
+
+        .confetti {
+            position: fixed;
+            
+            z-index: 9999;
+            width: 12px;
+            height: 12px;
+            background: #FFD700;
+            pointer-events: none;
+            animation: fall 3s linear infinite;
+        }
+
+        .memory-lane {
+            margin: 50px 0;
+            padding: 10px 0;
+            background: #F8F0FC;
+        }
+
+        .carousel-container {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            gap: 20px;
+            padding: 20px 0;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .carousel-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .memory-card {
+            flex: 0 0 300px;
+            height: 400px;
+            scroll-snap-align: start;
+            background: #F8F0FC;
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            box-shadow: 0 5px 15px rgba(108,77,171,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .memory-card::before {
+            content: "Our Memory";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #6C4DAB;
+            font-size: 1.2rem;
+            opacity: 0.3;
+            z-index: 1;
+        }
+
+        .memory-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: relative;
+            z-index: 2;
+        }
+
+        .section-title {
+            text-align: center;
+            color: #6C4DAB;
+            margin-bottom: 30px;
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+        }
+
+        footer {
+            background: #6C4DAB;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 50px;
+            font-size: 0.9rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes fall {
+            to { transform: translateY(100vh) rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            .countdown-item { min-width: 100px; padding: 15px; }
+            .invitation-box { padding: 25px; }
+            .memory-card { flex: 0 0 250px; height: 350px; }
+            .section-title { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <div class="container">
+            <div class="invitation-box">
+                <h1>Yayayay arcade date</h1>
+                <div class="pixel-heart">
+                    <i class="fas fa-gamepad"></i>
+                    <i class="fas fa-heart"></i>
+                    <i class="fas fa-ticket-alt"></i>
+                </div>
+                <p style="font-size: 1.2rem; margin-bottom: 20px; color: #555;">
+                    aye aye comrade<br>
+                    Get ready for a day filled with:<br>
+                    🕹️ Competitive air hockey matches<br>
+                    🎳 Glow-in-the-dark bowling<br>
+                    🍔 burgers at kents<br>
+                    💖 me making you blush continuously<br>
+                    <span style="color: #6C4DAB; font-weight: 600;">Saturday, February 1st 2025 @ 12:00 PM</span>
+                </p>
+                <button onclick="revealDetails()">Lesssgooo 🎯</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="details" id="details" style="display: none;">
+        <div class="container">
+            <h2 class="section-title">Countdown to Fun ⏳</h2>
+            <div id="countdown"></div>
+
+            <div class="arcade-grid">
+                <div class="arcade-card">
+                    <h3>📅 Since we love itineraries</h3>
+                    <p>10:00 AM - Meet at Kents<br>
+                    11:00 AM - Leave for mall<br>
+                    1:00 PM - Jiggly pancake at harajuku<br>
+                    2:30 PM - Go to the park<br>
+                    4:30 PM - I give you the best goodbye kiss ever</p>
+                    <i class="fas fa-clock" style="color: #6C4DAB; font-size: 2rem;"></i>
+                </div>
+                <div class="arcade-card">
+                    <h3>🏆 What we have ahead</h3>
+                    <p>Amazing burgers<br>
+                    good amount of window shopping<br>
+                    bowling, ofcourse<br>
+                    4324876 kisses<br>
+                    Random discussions on weird facts</p>
+                    <i class="fas fa-trophy" style="color: #6C4DAB; font-size: 2rem;"></i>
+                </div>
+                <div class="arcade-card">
+                    <h3>💌 Note for You</h3>
+                    <p>They say that eyes don't lie, but if they do, I'd wanna be fooled by yours</p>
+                    <i class="fas fa-heart" style="color: #6C4DAB; font-size: 2rem;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="memory-lane">
+        <div class="container">
+            <h2 class="section-title">Down the Memory Lane</h2>
+            <div class="carousel-container">
+                <div class="memory-card">
+                    Add image: <img src="1.jpg"> 
+                </div>
+                <div class="memory-card">
+                    Add image: <img src="2.jpg">
+                </div>
+                <div class="memory-card">
+                    Add image: <img src="3.jpg">
+                </div>
+                <div class="memory-card">
+                    Add image: <img src="4.jpg">
+                </div>
+                <div class="memory-card">
+                    Add image: <img src="5.jpg">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Powered by endless kisses and pixelated love 💞</p>
+        <p>Coded by Yash Agnihotri, all rights belong to Rohini Joshi (for the website and the developer) </p>
+    </footer>
+
+    <script>
+        const eventDate = new Date('2025-02-01T12:00:00Z');
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = eventDate - now;
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById('countdown').innerHTML = `
+                <div class="countdown-item">
+                    <h3>${days}</h3>
+                    <p>Days</p>
+                </div>
+                <div class="countdown-item">
+                    <h3>${hours}</h3>
+                    <p>Hours</p>
+                </div>
+                <div class="countdown-item">
+                    <h3>${minutes}</h3>
+                    <p>Minutes</p>
+                </div>
+                <div class="countdown-item">
+                    <h3>${seconds}</h3>
+                    <p>Seconds</p>
+                </div>
+            `;
+        }
+
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        function revealDetails() {
+            document.getElementById('details').style.display = 'block';
+            window.scrollTo({
+                top: document.getElementById('details').offsetTop - 50,
+                behavior: 'smooth'
+            });
+            // Add confetti effect
+            const colors = ['#ff3366', '#ff85a2', '#ffac81'];
+            for(let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.style.position = 'fixed';
+                confetti.style.width = '10px';
+                confetti.style.height = '10px';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.top = '-10px';
+                confetti.style.borderRadius = '50%';
+                confetti.style.animation = `fall ${Math.random() * 3 + 2}s linear`;
+                document.body.appendChild(confetti);
+                
+                setTimeout(() => confetti.remove(), 5000);
+            }
+        }
+
+        // Add falling animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fall {
+                to {
+                    transform: translateY(100vh) rotate(360deg);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
