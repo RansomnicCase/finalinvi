@@ -179,13 +179,22 @@
 
         .confetti {
             position: fixed;
-            
+            top: -10px;
             z-index: 9999;
             width: 12px;
             height: 12px;
             background: #FFD700;
             pointer-events: none;
             animation: fall 3s linear infinite;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(0) rotate(0deg);
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+            }
         }
 
         .memory-lane {
@@ -296,10 +305,6 @@
             0% { transform: scale(1); }
             50% { transform: scale(1.1); }
             100% { transform: scale(1); }
-        }
-
-        @keyframes fall {
-            to { transform: translateY(100vh) rotate(360deg); }
         }
 
         @media (max-width: 768px) {
@@ -468,17 +473,6 @@
                 setTimeout(() => confetti.remove(), 5000);
             }
         }
-
-        // Add falling animation
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes fall {
-                to {
-                    transform: translateY(100vh) rotate(360deg);
-                }
-            }
-        `;
-        document.head.appendChild(style);
     </script>
 </body>
 </html>
